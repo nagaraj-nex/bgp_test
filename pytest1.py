@@ -24,6 +24,12 @@ if len(snapshots) == 2:
         if snapshot.startswith('baseline'):
             REF_SNAPSHOT = snapshot
         else: NEW_SNAPSHOT = snapshot
+else:
+    for snapshot in snapshots:
+        if snapshot.startswith('baseline'):
+            REF_SNAPSHOT = snapshot
+            break
+    NEW_SNAPSHOT = snapshots[0]
 
 def get_compare_metadata_results(bf: Session, snapshot_name: str, reference_snapshot_name: str):
     """
