@@ -55,8 +55,8 @@ jobs:
 
     - name: set up python on github runner
       uses: actions/setup-python@v2
-        with: 
-          python-version: 3.8
+      with: 
+        python-version: 3.8
 
     - name: install dependencies
       run: |
