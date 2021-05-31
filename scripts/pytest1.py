@@ -2,9 +2,10 @@ import os
 from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
 
-os.environ['BFE_SSL_CERT'] = '../cert/test.crt'
-cert_file = os.environ.get('BFE_SSL_CERT')
-os.system('cat cert_file')
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+print(SCRIPT_DIR)
+os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/test.crt'
+
 BFE_HOST = "batfish.nexariacloud.com"
 BFE_PORT = 443
 bf = Session(host=BFE_HOST, port=BFE_PORT)
