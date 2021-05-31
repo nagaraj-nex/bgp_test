@@ -36,17 +36,17 @@ jobs:
 
     - name: Upload new snapshot to Batfish Enterprise server
       #uses: saparikh/bfe-upload@v1.0
-      uses: nagaraj-nex/bfe-upload@v1.0 
-      with:
-        server_name: batfish.nexariacloud.com #DNS name for your Batfish Enterprise server
-        server_ip: 54.197.65.81 #IP address of your Batfish Enterprise server
-        snapshot_folder: ${{ steps.prepare_snapshot.outputs.snapshot_dir }}
-        network_name: bgp_test_lab #Name of your network
-        snapshot_name: ${{ steps.date.outputs.date }}
+      #uses: nagaraj-nex/bfe-upload@v1.0 
+      #with:
+      #  server_name: batfish.nexariacloud.com #DNS name for your Batfish Enterprise server
+      #  server_ip: 54.197.65.81 #IP address of your Batfish Enterprise server
+      #  snapshot_folder: ${{ steps.prepare_snapshot.outputs.snapshot_dir }}
+      #  network_name: bgp_test_lab #Name of your network
+      #  snapshot_name: ${{ steps.date.outputs.date }}
         #snapshot_name: ${{ github.sha }} #This should be a unique value per commit. You can use a combination \ 
                                     # of the branch name and timestamp if you don’t want to use the commit id
-        ssl_certificate: ${{ secrets.BFE_SSL_CERTIFICATE }} #Github secret containing base64 encoded CA file
-      id: upload_snapshot
+      #  ssl_certificate: ${{ secrets.BFE_SSL_CERTIFICATE }} #Github secret containing base64 encoded CA file
+      #id: upload_snapshot
 
     - name: Retrieve outputs from BFE upload action
       run: |
@@ -65,4 +65,5 @@ jobs:
           
     - name: execute python script
       run: |
-        python $GITHUB_WORKSPACE/main/pytest1.py
+        python $GITHUB_WORKSPACE/main/scripts/pytest1.py
+        python $GITHUB_WORKSPACE/main/scripts/pytest2.py
