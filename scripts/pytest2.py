@@ -3,14 +3,14 @@ from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
 from intentionet.bfe.proto import policies_api_pb2 as policies_api
 
-os.environ['BFE_SSL_CERT'] = "../cert/nexbfe.crt"
+os.environ['BFE_SSL_CERT'] = "../cert/test.crt"
 BFE_HOST = "batfish.nexariacloud.com"
 BFE_PORT = 443
 bf = Session(host=BFE_HOST, port=BFE_PORT)
 
 NETWORK_NAME="AcmeCorp"
-SNAPSHOT_NAME="baseline"
-SNAPSHOT_DIR="../bgp_configs/reference_bgp/"
+#SNAPSHOT_NAME="baseline"
+#SNAPSHOT_DIR="../bgp_configs/reference_bgp/"
 
 networks = bf.list_networks()
 if NETWORK_NAME in networks:
