@@ -12,7 +12,7 @@ BFE_PORT = 443
 bf = Session(host=BFE_HOST, port=BFE_PORT)
 
 NETWORK_NAME="bgp_test_lab"
-#SNAPSHOT_NAME="baseline"
+SNAPSHOT_NAME="baseline"
 #SNAPSHOT_DIR="../bgp_configs/reference_bgp/"
 
 networks = bf.list_networks()
@@ -198,6 +198,6 @@ def get_policy_results(bf: Session):
         status[policy_response.policy.input.title] = policy_status_to_string(result.status)
 
     return status
-
+bf.set_snapshot(SNAPSHOT_NAME)
 status = get_policy_results(bf)
 print(status)
