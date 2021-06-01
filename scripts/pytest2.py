@@ -11,7 +11,7 @@ BFE_HOST = "batfish.nexariacloud.com"
 BFE_PORT = 443
 bf = Session(host=BFE_HOST, port=BFE_PORT)
 
-NETWORK_NAME="AcmeCorp"
+NETWORK_NAME="bgp_test_lab"
 #SNAPSHOT_NAME="baseline"
 #SNAPSHOT_DIR="../bgp_configs/reference_bgp/"
 
