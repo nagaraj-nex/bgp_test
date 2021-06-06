@@ -78,6 +78,12 @@ def get_policy_results(bf: Session):
 
     return status
 
+print()
+print("***********************************************")
+print("Snapshot against which policies are checked: %s", NEW_SNAPSHOT)
+print("***********************************************")
+print()
+
 bf.set_snapshot(NEW_SNAPSHOT)
 status = get_policy_results(bf)
 print(status)
