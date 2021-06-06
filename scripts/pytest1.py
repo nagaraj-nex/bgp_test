@@ -3,7 +3,6 @@ from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-print(SCRIPT_DIR)
 os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/test.crt'
 
 BFE_HOST = "batfish.nexariacloud.com"
