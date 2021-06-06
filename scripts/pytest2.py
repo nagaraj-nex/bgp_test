@@ -40,9 +40,9 @@ else:
             break
     NEW_SNAPSHOT = snapshots[0]
 
-bf._experimental_create_policy(policies.devices_have_routes)
-bf._experimental_create_policy(policies.filter_behavior_denied)
-bf._experimental_create_policy(policies.filter_behavior_allowed)
+bf._experimental_create_policy(my_policies.devices_have_routes)
+bf._experimental_create_policy(my_policies.filter_behavior_denied)
+bf._experimental_create_policy(my_policies.filter_behavior_allowed)
 
 def policy_status_to_string(status):
     if status == policies_api.POLICY_STATUS_UNKNOWN:
