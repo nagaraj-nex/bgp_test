@@ -62,4 +62,4 @@ def get_compare_metadata_results(bf: Session, snapshot_name: str, reference_snap
     return resp
 
 response = get_compare_metadata_results(bf, REF_SNAPSHOT, NEW_SNAPSHOT)
-print(response) 
+print(response)

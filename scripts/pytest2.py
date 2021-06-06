@@ -15,9 +15,9 @@ NETWORK_NAME="bgp_test_lab"
 SNAPSHOT_NAME="baseline"
 #SNAPSHOT_DIR="../bgp_configs/reference_bgp/"
 
-networks = bf.list_networks()
-if NETWORK_NAME in networks:
-    bf.delete_network(NETWORK_NAME)
+#networks = bf.list_networks()
+#if NETWORK_NAME in networks:
+#    bf.delete_network(NETWORK_NAME)
 
 bf.set_network(NETWORK_NAME)
 
@@ -198,6 +198,7 @@ def get_policy_results(bf: Session):
         status[policy_response.policy.input.title] = policy_status_to_string(result.status)
 
     return status
+
 bf.set_snapshot(SNAPSHOT_NAME)
 status = get_policy_results(bf)
 print(status)
