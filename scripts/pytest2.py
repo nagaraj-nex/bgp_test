@@ -2,6 +2,7 @@ import os
 from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
 from intentionet.bfe.proto import policies_api_pb2 as policies_api
+import policies
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 print(SCRIPT_DIR)
@@ -10,160 +11,39 @@ os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/test.crt'
 BFE_HOST = "batfish.nexariacloud.com"
 BFE_PORT = 443
 bf = Session(host=BFE_HOST, port=BFE_PORT)
+if bf:
+    print()
+    print("***********************************************")
+    print("Created BFE session on host {}".format(BFE_HOST))
+    print("***********************************************")
+    print()
 
+REF_SNAPSHOT = ''
+NEW_SNAPSHOT = ''
 NETWORK_NAME="bgp_test_lab"
-SNAPSHOT_NAME="baseline"
-#SNAPSHOT_DIR="../bgp_configs/reference_bgp/"
-
-#networks = bf.list_networks()
-#if NETWORK_NAME in networks:
-#    bf.delete_network(NETWORK_NAME)
-
 bf.set_network(NETWORK_NAME)
+print()
+print("***********************************************")
+print("Network is set as {}".format(NETWORK_NAME))
+print("***********************************************")
+print()
 
-devices_have_routes = {
-  "description": "CE1 networks on CE2",
-  "title": "CE2 - Received routes",
-  "devices_have_routes": {
-    "vrfs": {
-      "devices": {
-        "hostname": {
-          "regex": "ce2"
-        }
-      },
-      "name": {
-        "regex": ".*"
-      }
-    },
-    "routes": {
-      "all": {
-        "of": [
-          {
-            "network": {
-              "equals": "100.1.0.1/32"
-            },
-            "bgp": {}
-          },
-          {
-            "network": {
-              "equals": "100.1.1.1/32"
-            },
-            "bgp": {}
-          },
-          {
-            "network": {
-              "equals": "100.1.2.1/32"
-            },
-            "bgp": {}
-          },
-          {
-            "network": {
-              "equals": "100.1.3.1/32"
-            },
-            "bgp": {}
-          }
-        ]
-      }
-    }
-  }
-}
+snapshots = bf.list_snapshots()
+if len(snapshots) == 2:
+    for snapshot in snapshots:
+        if snapshot.startswith('baseline'):
+            REF_SNAPSHOT = snapshot
+        else: NEW_SNAPSHOT = snapshot
+else:
+    for snapshot in snapshots:
+        if snapshot.startswith('baseline'):
+            REF_SNAPSHOT = snapshot
+            break
+    NEW_SNAPSHOT = snapshots[0]
 
-filter_behavior_denied = {
-  "description": "100.1.1.1 denied",
-  "title": "ce2 to ce1",
-  "filter_behavior": {
-    "devices": {
-      "hostname": {
-        "regex": "pe3"
-      }
-    },
-    "filters": {
-      "name": {
-        "regex": "100"
-      }
-    },
-    "flows": {
-      "include": [
-        {
-          "src_ips": [
-            {
-              "exact_match": "200.1.1.1"
-            }
-          ],
-          "dst_ips": [
-            {
-              "exact_match": "100.1.1.1"
-            }
-          ],
-          "apps": [
-            "tcp"
-          ]
-        },
-        {
-          "src_ips": [
-            {
-              "exact_match": "200.1.1.1"
-            }
-          ],
-          "dst_ips": [
-            {
-              "exact_match": "100.1.2.1"
-            }
-          ],
-          "apps": [
-            "tcp"
-          ]
-        }
-      ]
-    },
-    "expect": {
-      "action": "DENY"
-    }
-  }
-}
-
-filter_behavior_allowed = {
-  "description": "allowed on ce1",
-  "title": "ce2 permitted",
-  "filter_behavior": {
-    "devices": {
-      "hostname": {
-        "regex": "pe3"
-      }
-    },
-    "filters": {
-      "name": {
-        "regex": "100"
-      }
-    },
-    "flows": {
-      "include": [
-        {
-          "src_ips": [
-            {
-              "exact_match": "200.1.1.1"
-            }
-          ],
-          "dst_ips": [
-            {
-              "exact_match": "100.1.1.1"
-            }
-          ],
-          "apps": [
-            "tcp"
-          ]
-        }
-      ]
-    },
-    "expect": {
-      "action": "PERMIT"
-    }
-  }
-}
-
-bf._experimental_create_policy(devices_have_routes)
-bf._experimental_create_policy(filter_behavior_denied)
-bf._experimental_create_policy(filter_behavior_allowed)
+bf._experimental_create_policy(policies.devices_have_routes)
+bf._experimental_create_policy(policies.filter_behavior_denied)
+bf._experimental_create_policy(policies.filter_behavior_allowed)
 
 def policy_status_to_string(status):
     if status == policies_api.POLICY_STATUS_UNKNOWN:
@@ -199,6 +79,6 @@ def get_policy_results(bf: Session):
 
     return status
 
-bf.set_snapshot(SNAPSHOT_NAME)
+bf.set_snapshot(NEW_SNAPSHOT)
 status = get_policy_results(bf)
 print(status)
