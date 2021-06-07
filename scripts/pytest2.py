@@ -75,12 +75,12 @@ def get_policy_results(bf: Session):
             )
         )
         status[policy_response.policy.input.title] = policy_status_to_string(result.status)
-
+    print(result)
     return status
 
 print()
 print("***********************************************")
-print("Snapshot against which policies are checked: %s", NEW_SNAPSHOT)
+print("Snapshot against which policies are checked: ", NEW_SNAPSHOT)
 print("***********************************************")
 print()
 
