@@ -1,4 +1,4 @@
-name: call snapshot compare script
+name: execute tests on new branch
 
 on: create
 
