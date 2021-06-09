@@ -91,13 +91,16 @@ def get_result(resp):
     print(json.dumps(result, indent=4))
 
 response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
+print(response)
 print("before if", response.uninitialized)
 if response.uninitialized:
     init_snapshot_comparison(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
     response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
+    print(response)
     print("before while", response.uninitialized)
     while response.uninitialized:
         response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
+        print(response)
         print("while", response.uninitialized)
     else: 
         get_result(response)
