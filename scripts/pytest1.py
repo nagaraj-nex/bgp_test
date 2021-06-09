@@ -1,4 +1,5 @@
 import os
+import json
 from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
 
@@ -17,7 +18,7 @@ if bf:
 
 REF_SNAPSHOT = ''
 NEW_SNAPSHOT = ''
-NETWORK_NAME="bgp_test_lab"
+NETWORK_NAME="NEX-BFE"
 bf.set_network(NETWORK_NAME)
 print()
 print("***********************************************")
@@ -42,7 +43,7 @@ else:
 
 print()
 print("***********************************************")
-print("Snapshots being compared are {}, {}".format(REF_SNAPSHOT, NEW_SNAPSHOT))
+print("Snapshots being compared are {}, {}".format(NEW_SNAPSHOT, REF_SNAPSHOT))
 print("***********************************************")
 print()
 
@@ -60,5 +61,45 @@ def get_compare_metadata_results(bf: Session, snapshot_name: str, reference_snap
     )
     return resp
 
+def init_snapshot_comparison(bf: Session, snapshot_name: str, reference_snapshot_name: str):
+
+    init_resp = bf._api_gw.InitSnapshotComparison(
+        api.InitSnapshotComparisonRequest(
+            network_name=bf.network,
+            snapshot_name=snapshot_name,
+            reference_snapshot_name=reference_snapshot_name
+        )
+    )
+
+def get_result(resp):
+
+    result = {}
+    
+    # pick some categories to embed in the result 
+    result["device_configuration"] = resp.configurations.num_results
+    result["devices"] = resp.devices.num_results
+    result["interfaces"] = resp.interfaces.num_results
+    result["increased_flows"] = resp.reachability.has_increased_flows
+    result["decreased_flows"] = resp.reachability.has_decreased_flows
+    result["devices_routing"] = resp.routes.num_results
+    result["bgp_peer_attributes"] = resp.rp_bgp_peer_attributes.num_results
+    result["bgp_process_attributes"] = resp.rp_bgp_process_attributes.num_results
+    result["ospf_interface"] = resp.rp_ospf_interface.num_results
+    result["ospf_neighbors"] = resp.rp_ospf_neighbors.num_results
+    result["ospf_process"] = resp.rp_ospf_process.num_results
+
+    print(json.dumps(result, indent=4))
+
 response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
-print(response)
+
+if(response.uninitialized):
+    init_snapshot_comparison(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
+    response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
+    while not response.uninitialized:
+        response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
+    else: 
+        get_result(response)
+else:
+    get_result(response)
+
+

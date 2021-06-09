@@ -19,7 +19,7 @@ if bf:
 
 REF_SNAPSHOT = ''
 NEW_SNAPSHOT = ''
-NETWORK_NAME="bgp_test_lab"
+NETWORK_NAME="NEX-BFE"
 bf.set_network(NETWORK_NAME)
 print()
 print("***********************************************")
@@ -56,6 +56,7 @@ def policy_status_to_string(status):
     else:
         raise RuntimeError("Unknown policy status {}".format(status))
 
+#def get_policy_results(bf: Session, snapshot: str):
 def get_policy_results(bf: Session):
     """
     Get policy evaluation results for a snapshot.
@@ -65,6 +66,7 @@ def get_policy_results(bf: Session):
     response = bf._api_gw.ListPolicyResultsMetadata(
         api.ListPolicyResultsMetadataRequest(
             network_name=bf.network, snapshot_name=bf.snapshot
+            #network_name=bf.network, snapshot_name=snapshot
         )
     )
     status = {}
@@ -85,5 +87,6 @@ print("***********************************************")
 print()
 
 bf.set_snapshot(NEW_SNAPSHOT)
+#print(bf.snapshot)
 status = get_policy_results(bf)
 print(status)
