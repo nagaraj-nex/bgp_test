@@ -95,7 +95,7 @@ response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
 if response.uninitialized:
     init_snapshot_comparison(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
     response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
-    while response.uninitialized:
+    while not response.uninitialized:
         response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
     else: 
         get_result(response)
