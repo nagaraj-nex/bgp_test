@@ -92,10 +92,10 @@ def get_result(resp):
 
 response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
 
-if(response.uninitialized):
+if response.uninitialized:
     init_snapshot_comparison(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
     response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
-    while not response.uninitialized:
+    while response.uninitialized:
         response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
     else: 
         get_result(response)
