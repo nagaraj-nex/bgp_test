@@ -9,6 +9,8 @@ jobs:
     steps: 
       - name: check out contents from repo
         uses: actions/checkout@v2
+        with:
+          path: main
 
       - name: set up python on github runner
 
