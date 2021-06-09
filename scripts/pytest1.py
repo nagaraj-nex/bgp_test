@@ -97,11 +97,10 @@ if response.uninitialized:
     init_snapshot_comparison(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
     response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
     print(response)
-    print("before while", response.uninitialized)
-    while response.uninitialized:
+    print("before while", response.configurations.status)
+    while (response.configurations.status.endswith("PENDING")):
         response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
-        print(response)
-        print("while", response.uninitialized)
+        print("while", response.configurations.status)
     else: 
         get_result(response)
 else:
