@@ -97,10 +97,10 @@ if response.uninitialized:
     init_snapshot_comparison(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
     response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
     print(response)
-    print("before while", response.configurations.status)
-    while (response.configurations.status != 2):
+    print("before while", response.aws_security_groups.status)
+    while (response.aws_security_groups.status != 2):
         response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
-        print("while", response.configurations.status)
+        print("while", response.aws_security_groups.status)
     else: 
         get_result(response)
 else:
