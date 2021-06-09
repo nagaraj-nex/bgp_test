@@ -2,28 +2,25 @@ import os
 from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
 from intentionet.bfe.proto import policies_api_pb2 as policies_api
-import my_policies
+import const
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/test.crt'
 
-BFE_HOST = "batfish.nexariacloud.com"
-BFE_PORT = 443
-bf = Session(host=BFE_HOST, port=BFE_PORT)
+bf = Session(host=const.BFE_HOST, port=const.BFE_PORT)
 if bf:
     print()
     print("***********************************************")
-    print("Created BFE session on host {}".format(BFE_HOST))
+    print("Created BFE session on host {}".format(const.BFE_HOST))
     print("***********************************************")
     print()
 
 REF_SNAPSHOT = ''
 NEW_SNAPSHOT = ''
-NETWORK_NAME="NEX-BFE"
-bf.set_network(NETWORK_NAME)
+bf.set_network(const.NETWORK_NAME)
 print()
 print("***********************************************")
-print("Network is set as {}".format(NETWORK_NAME))
+print("Network is set as {}".format(const.NETWORK_NAME))
 print("***********************************************")
 print()
 
@@ -40,9 +37,7 @@ else:
             break
     NEW_SNAPSHOT = snapshots[0]
 
-bf._experimental_create_policy(my_policies.devices_have_routes)
-bf._experimental_create_policy(my_policies.filter_behavior_denied)
-bf._experimental_create_policy(my_policies.filter_behavior_allowed)
+
 
 def policy_status_to_string(status):
     if status == policies_api.POLICY_STATUS_UNKNOWN:

@@ -1,28 +1,26 @@
-import os
-import json
+import os, json
 from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
+import const
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/test.crt'
 
-BFE_HOST = "batfish.nexariacloud.com"
-BFE_PORT = 443
-bf = Session(host=BFE_HOST, port=BFE_PORT)
+bf = Session(host=const.BFE_HOST, port=const.BFE_PORT)
 if bf:
     print()
     print("***********************************************")
-    print("Created BFE session on host {}".format(BFE_HOST))
+    print("Created BFE session on host {}".format(const.BFE_HOST))
     print("***********************************************")
     print()
 
 REF_SNAPSHOT = ''
 NEW_SNAPSHOT = ''
-NETWORK_NAME="NEX-BFE"
-bf.set_network(NETWORK_NAME)
+
+bf.set_network(const.NETWORK_NAME)
 print()
 print("***********************************************")
-print("Network is set as {}".format(NETWORK_NAME))
+print("Network is set as {}".format(const.NETWORK_NAME))
 print("***********************************************")
 print()
 
