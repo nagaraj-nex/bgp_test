@@ -1,8 +1,6 @@
 name: call snapshot compare script
 
-on: 
-  push:
-    branches: [ main ]
+on: create
 
 jobs:
   build:
@@ -25,4 +23,4 @@ jobs:
           
       - name: execute python script
         run: |
-          python pytest1.py
+          python pytest2.py
