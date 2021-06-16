@@ -1,7 +1,13 @@
 import os, json
+from typing import Dict
 from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
 import const
+import slack
+import os
+#SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
+SLACK_BOT_TOKEN = 'xoxb-1289970300372-2190340723472-QLcipgUuaki81P5CkAKtPhPD'
+client = slack.WebClient(token=SLACK_BOT_TOKEN)
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/test.crt'
@@ -24,20 +30,23 @@ print("Network is set as {}".format(const.NETWORK_NAME))
 print("***********************************************")
 print()
 
+def snapshots_to_compare():
+    snapshots = bf.list_snapshots()
+    #case when tere are just 2 snapshots, where reference snapshot is called baseline and is manually uploaded
+    if len(snapshots) == 2:
+        for snapshot in snapshots:
+            if snapshot.startswith('baseline'):
+                REF_SNAPSHOT = snapshot
+            else: NEW_SNAPSHOT = snapshot
+    else:
+        for snapshot in snapshots:
+            if snapshot.startswith('baseline'):
+                REF_SNAPSHOT = snapshot
+                break
+        NEW_SNAPSHOT = snapshots[0]
+    return REF_SNAPSHOT, NEW_SNAPSHOT
 
-snapshots = bf.list_snapshots()
-#case when tere are just 2 snapshots, where reference snapshot is called baseline and is manually uploaded
-if len(snapshots) == 2:
-    for snapshot in snapshots:
-        if snapshot.startswith('baseline'):
-            REF_SNAPSHOT = snapshot
-        else: NEW_SNAPSHOT = snapshot
-else:
-    for snapshot in snapshots:
-        if snapshot.startswith('baseline'):
-            REF_SNAPSHOT = snapshot
-            break
-    NEW_SNAPSHOT = snapshots[0]
+REF_SNAPSHOT, NEW_SNAPSHOT = snapshots_to_compare()
 
 print()
 print("***********************************************")
@@ -69,7 +78,7 @@ def init_snapshot_comparison(bf: Session, snapshot_name: str, reference_snapshot
         )
     )
 
-def get_result(resp):
+def get_result_from_response(resp):
 
     result = {}
     
@@ -86,17 +95,50 @@ def get_result(resp):
     result["ospf_neighbors"] = resp.rp_ospf_neighbors.num_results
     result["ospf_process"] = resp.rp_ospf_process.num_results
 
-    print(json.dumps(result, indent=4))
-
-response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
-if response.uninitialized:
-    init_snapshot_comparison(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
-    response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
-    while (response.aws_security_groups.status != 2):
-        response = get_compare_metadata_results(bf, NEW_SNAPSHOT, REF_SNAPSHOT)
-    else: 
-        get_result(response)
-else:
-    get_result(response)
+    result = json.dumps(result, indent=4)
+    return result
 
 
+print("REF_SNAPSHOT: ", REF_SNAPSHOT)
+print("NEW_SNAPSHOT: ", NEW_SNAPSHOT)
+
+def process_and_post_msg(comparison_result: Dict) -> str:
+    result = json.loads(comparison_result)
+    keys = result.keys()
+    msg = "Summary of changes between {} and {} are shown below:\n\n".format(NEW_SNAPSHOT, REF_SNAPSHOT)
+    for k, v in result.items():
+        msg = msg + (k + " : " + str(v)) + "\n"
+    #print(msg)
+    msg = msg + "\nPlease refer the below URL for further details:\n\n"
+    dashboard_url = "https://{}/dashboard/{}/{}/compare/{}/configurations".format(const.BFE_HOST, const.NETWORK_NAME, NEW_SNAPSHOT, REF_SNAPSHOT)
+    msg = msg + dashboard_url
+    return msg
+
+def compare_snapshots(snapshot_name: str, reference_snapshot_name: str) -> Dict:
+
+    if snapshot_name == reference_snapshot_name:
+        msg = "Nothing to compare as both snapshots are the same."
+        print(msg)
+        client.chat_postMessage(channel='netops_mntc', text=msg)
+    else:
+        response = get_compare_metadata_results(bf, snapshot_name, reference_snapshot_name)
+        #print(response)
+        comparison_result = {}
+        if response.uninitialized:
+            init_snapshot_comparison(bf, snapshot_name, reference_snapshot_name)
+            response = get_compare_metadata_results(bf, snapshot_name, reference_snapshot_name)
+            #print(response)
+            while (response.aws_security_groups.status != 2):
+                response = get_compare_metadata_results(bf, snapshot_name, reference_snapshot_name)
+                #print(response)
+            else: 
+                comparison_result = get_result_from_response(response)
+        else:
+            comparison_result = get_result_from_response(response)
+
+        #print(type(comparison_result))
+        msg = process_and_post_msg(comparison_result) 
+        print(msg)
+        client.chat_postMessage(channel='netops_mntc', text=msg)
+
+compare_snapshots(NEW_SNAPSHOT, REF_SNAPSHOT)
