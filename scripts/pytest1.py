@@ -3,11 +3,12 @@ from typing import Dict
 from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
 import const
-import slack
+from slack import WebClient
+from slack.errors import SlackApiError
 import os
 #SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 SLACK_BOT_TOKEN = 'xoxb-1289970300372-2190340723472-Zb1r9KuiKQN8Yo6sTux6Wbwc'
-client = slack.WebClient(token=SLACK_BOT_TOKEN)
+client = WebClient(token=SLACK_BOT_TOKEN)
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/test.crt'
@@ -140,6 +141,9 @@ def compare_snapshots(snapshot_name: str, reference_snapshot_name: str) -> Dict:
         #print(type(comparison_result))
         msg = process_and_post_msg(comparison_result) 
         print(msg)
-        client.chat_postMessage(channel='netops_mntc', text=msg)
+        try:
+            client.chat_postMessage(channel='netops_mntc', text=msg)
+        except SlackApiError as e:
+            assert e.response["error"]
 
 compare_snapshots(NEW_SNAPSHOT, REF_SNAPSHOT)
