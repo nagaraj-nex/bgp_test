@@ -6,7 +6,7 @@ import const
 import slack
 import os
 #SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
-SLACK_BOT_TOKEN = 'xoxb-1289970300372-2190340723472-QLcipgUuaki81P5CkAKtPhPD'
+SLACK_BOT_TOKEN = 'xoxb-1289970300372-2190340723472-EMtrSOmnY1xxBfN6W46BwJkQ'
 client = slack.WebClient(token=SLACK_BOT_TOKEN)
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
