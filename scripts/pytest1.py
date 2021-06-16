@@ -20,6 +20,7 @@ if bf:
     print("***********************************************")
     print()
 
+
 REF_SNAPSHOT = ''
 NEW_SNAPSHOT = ''
 
