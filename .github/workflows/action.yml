@@ -67,6 +67,6 @@ jobs:
       env: 
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       run: |
-        python $GITHUB_WORKSPACE/main/scripts/pytest1.py
-        python $GITHUB_WORKSPACE/main/scripts/pytest2.py
+        python $GITHUB_WORKSPACE/main/scripts/compare_snapshots.py
+        python $GITHUB_WORKSPACE/main/scripts/apply_policies.py
       
