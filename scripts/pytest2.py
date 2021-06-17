@@ -3,6 +3,7 @@ from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
 from intentionet.bfe.proto import policies_api_pb2 as policies_api
 import const
+from send_to_slack import sendToSlack
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/test.crt'
@@ -85,3 +86,14 @@ bf.set_snapshot(NEW_SNAPSHOT)
 #print(bf.snapshot)
 status = get_policy_results(bf)
 print(status)
+print(type(status))
+
+msg = f"Summary of policy results for the snapshot \'{NEW_SNAPSHOT}\' is shown below.\n\n"
+for k, v in status.items():
+    msg = msg + (k + " : " + str(v)) + "\n"
+
+msg = msg + "\nPlease refer the below URL for further details:\n\n"
+policy_url = f'https://{const.BFE_HOST}/dashboard/{const.NETWORK_NAME}/{NEW_SNAPSHOT}/policies/'
+msg = msg + policy_url
+print(msg)
+sendToSlack(const.SLACK_CHANNEL,msg)

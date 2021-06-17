@@ -111,7 +111,7 @@ def process_and_post_msg(comparison_result: Dict) -> str:
         msg = msg + (k + " : " + str(v)) + "\n"
     #print(msg)
     msg = msg + "\nPlease refer the below URL for further details:\n\n"
-    dashboard_url = "https://{}/dashboard/{}/{}/compare/{}/configurations".format(const.BFE_HOST, const.NETWORK_NAME, NEW_SNAPSHOT, REF_SNAPSHOT)
+    dashboard_url = f"https://{const.BFE_HOST}/dashboard/{const.NETWORK_NAME}/{NEW_SNAPSHOT}/compare/{REF_SNAPSHOT}/configurations"
     msg = msg + dashboard_url
     return msg
 
@@ -120,7 +120,7 @@ def compare_snapshots(snapshot_name: str, reference_snapshot_name: str) -> Dict:
     if snapshot_name == reference_snapshot_name:
         msg = "Nothing to compare as both snapshots are the same."
         print(msg)
-        client.chat_postMessage(channel='netops_mntc', text=msg)
+        sendToSlack(const.SLACK_CHANNEL,msg)
     else:
         response = get_compare_metadata_results(bf, snapshot_name, reference_snapshot_name)
         #print(response)
@@ -140,6 +140,6 @@ def compare_snapshots(snapshot_name: str, reference_snapshot_name: str) -> Dict:
         #print(type(comparison_result))
         msg = process_and_post_msg(comparison_result) 
         print(msg)
-        sendToSlack('netops_mntc',msg)
+        sendToSlack(const.SLACK_CHANNEL,msg)
 
 compare_snapshots(NEW_SNAPSHOT, REF_SNAPSHOT)
