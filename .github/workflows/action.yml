@@ -64,6 +64,7 @@ jobs:
         pip install -r $GITHUB_WORKSPACE/main/requirements.txt
           
     - name: execute python script
+      env: SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       run: |
         python $GITHUB_WORKSPACE/main/scripts/pytest1.py
         python $GITHUB_WORKSPACE/main/scripts/pytest2.py

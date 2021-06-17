@@ -6,8 +6,10 @@ import const
 from slack import WebClient
 from slack.errors import SlackApiError
 import os
-#SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
-SLACK_BOT_TOKEN = 'xoxb-1289970300372-2190340723472-Zb1r9KuiKQN8Yo6sTux6Wbwc'
+import logging
+logging.basicConfig(level=logging.ERROR)
+
+SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 client = WebClient(token=SLACK_BOT_TOKEN)
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -107,7 +109,7 @@ print("NEW_SNAPSHOT: ", NEW_SNAPSHOT)
 def process_and_post_msg(comparison_result: Dict) -> str:
     result = json.loads(comparison_result)
     keys = result.keys()
-    msg = "Summary of changes between {} and {} are shown below:\n\n".format(NEW_SNAPSHOT, REF_SNAPSHOT)
+    msg = "Summary of changes between the snapshots \'{}\' and \'{}\' are shown below:\n\n".format(NEW_SNAPSHOT, REF_SNAPSHOT)
     for k, v in result.items():
         msg = msg + (k + " : " + str(v)) + "\n"
     #print(msg)
@@ -144,6 +146,8 @@ def compare_snapshots(snapshot_name: str, reference_snapshot_name: str) -> Dict:
         try:
             client.chat_postMessage(channel='netops_mntc', text=msg)
         except SlackApiError as e:
-            assert e.response["error"]
+            error = e.response["error"]
+            print(error)
+            assert error
 
 compare_snapshots(NEW_SNAPSHOT, REF_SNAPSHOT)
