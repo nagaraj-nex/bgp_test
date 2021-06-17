@@ -9,9 +9,6 @@ from send_to_slack import sendToSlack
 
 logging.basicConfig(level=logging.ERROR)
 
-SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
-client = WebClient(token=SLACK_BOT_TOKEN)
-
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/test.crt'
 
