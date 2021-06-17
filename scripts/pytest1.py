@@ -3,10 +3,10 @@ from typing import Dict
 from pybfe.client.session import Session
 from intentionet.bfe.proto import api_gateway_pb2 as api
 import const
-from slack import WebClient
-from slack.errors import SlackApiError
 import os
 import logging
+from send_to_slack import sendToSlack
+
 logging.basicConfig(level=logging.ERROR)
 
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
@@ -143,11 +143,6 @@ def compare_snapshots(snapshot_name: str, reference_snapshot_name: str) -> Dict:
         #print(type(comparison_result))
         msg = process_and_post_msg(comparison_result) 
         print(msg)
-        try:
-            client.chat_postMessage(channel='netops_mntc', text=msg)
-        except SlackApiError as e:
-            error = e.response["error"]
-            print(error)
-            assert error
+        sendToSlack('netops_mntc',msg)
 
 compare_snapshots(NEW_SNAPSHOT, REF_SNAPSHOT)
