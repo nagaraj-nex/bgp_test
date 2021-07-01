@@ -15,7 +15,7 @@ jobs:
       with:
         path: main #to reference files from this repo, the filepath to use will be $GITHUB_WORKSPACE/main
 
-    # Modify this step so that your snapshot directory is organized in the way described at
+    # Modify this step so that  your snapshot directory is organized in the way described at
     # https://batfish.readthedocs.io/en/latest/notebooks/interacting.html#Packaging-snapshot-data
 
     - name: Create snapshot directory required for Batfish
