@@ -10,7 +10,7 @@ from send_to_slack import sendToSlack
 logging.basicConfig(level=logging.ERROR)
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/test.crt'
+os.environ['BFE_SSL_CERT'] = SCRIPT_DIR+'/../cert/cert.pem'
 
 bf = Session(host=const.BFE_HOST, port=const.BFE_PORT)
 if bf:
