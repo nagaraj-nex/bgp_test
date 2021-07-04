@@ -82,6 +82,7 @@ print("Snapshot against which policies are checked: ", NEW_SNAPSHOT)
 print("***********************************************")
 print()
 
+
 bf.set_snapshot(NEW_SNAPSHOT)
 #print(bf.snapshot)
 status = get_policy_results(bf)
