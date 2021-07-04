@@ -68,4 +68,5 @@ jobs:
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       run: |
         python $GITHUB_WORKSPACE/main/scripts/apply_policies.py
+        
       
