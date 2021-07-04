@@ -53,6 +53,7 @@ def snapshots_to_compare() -> str:
         if 'baseline' in snapshot:
             REF_SNAPSHOT = snapshot
             NEW_SNAPSHOT = snapshots[0]
+            break
         else:
             REF_SNAPSHOT = snapshots[-1]
             NEW_SNAPSHOT = snapshots[0]
