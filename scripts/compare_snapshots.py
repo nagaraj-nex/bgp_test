@@ -27,23 +27,38 @@ print("Network is set as {}".format(const.NETWORK_NAME))
 print("***********************************************")
 print()
 
-def snapshots_to_compare():
+# def snapshots_to_compare():
+#     snapshots = bf.list_snapshots()
+#     REF_SNAPSHOT = ''
+#     NEW_SNAPSHOT = ''
+#     #case when tere are just 2 snapshots, where reference snapshot is called baseline and is manually uploaded
+#     if len(snapshots) == 2:
+#         for snapshot in snapshots:
+#             if snapshot.startswith('baseline'):
+#                 REF_SNAPSHOT = snapshot
+#             else: NEW_SNAPSHOT = snapshot
+#     else:
+#         for snapshot in snapshots:
+#             if snapshot.startswith('baseline'):
+#                 REF_SNAPSHOT = snapshot
+#                 break
+#         NEW_SNAPSHOT = snapshots[0]
+#     return REF_SNAPSHOT, NEW_SNAPSHOT
+
+def snapshots_to_compare() -> str:
     snapshots = bf.list_snapshots()
     REF_SNAPSHOT = ''
     NEW_SNAPSHOT = ''
-    #case when tere are just 2 snapshots, where reference snapshot is called baseline and is manually uploaded
-    if len(snapshots) == 2:
-        for snapshot in snapshots:
-            if snapshot.startswith('baseline'):
-                REF_SNAPSHOT = snapshot
-            else: NEW_SNAPSHOT = snapshot
-    else:
-        for snapshot in snapshots:
-            if snapshot.startswith('baseline'):
-                REF_SNAPSHOT = snapshot
-                break
-        NEW_SNAPSHOT = snapshots[0]
+    for snapshot in snapshots:
+        if 'baseline' in snapshot:
+            REF_SNAPSHOT = snapshot
+            NEW_SNAPSHOT = snapshots[-1]
+        else:
+            REF_SNAPSHOT = snapshots[0]
+            NEW_SNAPSHOT = snapshots[-1]
+    
     return REF_SNAPSHOT, NEW_SNAPSHOT
+
 
 REF_SNAPSHOT, NEW_SNAPSHOT = snapshots_to_compare()
 
@@ -140,4 +155,4 @@ def compare_snapshots(snapshot_name: str, reference_snapshot_name: str) -> Dict:
         print(msg)
         sendToSlack(const.SLACK_CHANNEL,msg)
 
-compare_snapshots(NEW_SNAPSHOT, REF_SNAPSHOT)
+#compare_snapshots(NEW_SNAPSHOT, REF_SNAPSHOT)
