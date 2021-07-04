@@ -52,10 +52,10 @@ def snapshots_to_compare() -> str:
     for snapshot in snapshots:
         if 'baseline' in snapshot:
             REF_SNAPSHOT = snapshot
-            NEW_SNAPSHOT = snapshots[-1]
+            NEW_SNAPSHOT = snapshots[0]
         else:
-            REF_SNAPSHOT = snapshots[0]
-            NEW_SNAPSHOT = snapshots[-1]
+            REF_SNAPSHOT = snapshots[-1]
+            NEW_SNAPSHOT = snapshots[0]
     
     return REF_SNAPSHOT, NEW_SNAPSHOT
 
@@ -155,4 +155,4 @@ def compare_snapshots(snapshot_name: str, reference_snapshot_name: str) -> Dict:
         print(msg)
         sendToSlack(const.SLACK_CHANNEL,msg)
 
-#compare_snapshots(NEW_SNAPSHOT, REF_SNAPSHOT)
+compare_snapshots(NEW_SNAPSHOT, REF_SNAPSHOT)
