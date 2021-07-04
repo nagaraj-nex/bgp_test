@@ -73,7 +73,7 @@ def get_policy_results(bf: Session):
             )
         )
         status[policy_response.policy.input.title] = policy_status_to_string(result.status)
-    print(result)
+        print(result)
     return status
 
 print()
