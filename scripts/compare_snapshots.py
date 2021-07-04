@@ -20,10 +20,6 @@ if bf:
     print("***********************************************")
     print()
 
-
-REF_SNAPSHOT = ''
-NEW_SNAPSHOT = ''
-
 bf.set_network(const.NETWORK_NAME)
 print()
 print("***********************************************")
@@ -33,6 +29,8 @@ print()
 
 def snapshots_to_compare():
     snapshots = bf.list_snapshots()
+    REF_SNAPSHOT = ''
+    NEW_SNAPSHOT = ''
     #case when tere are just 2 snapshots, where reference snapshot is called baseline and is manually uploaded
     if len(snapshots) == 2:
         for snapshot in snapshots:
